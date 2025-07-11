@@ -1,0 +1,107 @@
+# python3
+alias mkvenv='python3 -m venv .venv'
+alias startvenv='source .venv/bin/activate'
+alias stopvenv='deactivate'
+alias python='python3'
+
+# python2 
+alias mkvenv2='python2 -m venv .venv'
+
+# Kubernetes
+export KUBE_EDITOR="nvim"
+
+[[ $commands[kubectl] ]] && source <(kubectl completion zsh)
+alias k='kubectl'
+
+# set our kube namespace, form of `k8ns <my namespace>`
+alias k8ns='kubectl config set-context --current --namespace'
+
+# set our kube cluster. Cluster here is actually kube context.
+alias k8cluster='kubectl config use-context'
+
+# return all pods in our current cluster/namespace
+alias pods='kubectl get pods --sort-by=.metadata.creationTimestamp'
+
+# return back a specific pod, form of `pod <pod partial match>`
+function pod() {
+    kubectl get pods | grep $1 | tail -1 | awk '{ print $1 }'
+}
+
+# pull logs from a single pod, form of `k8shell <pod partial match> (<container)`
+function k8log() {
+    POD=$(pod $1)
+    if [ "$#" -eq 2 ]; then
+      kubectl logs -c $2 $POD
+    else
+      kubectl logs $POD
+    fi
+}
+alias k8logs=k8log
+
+# wait for a given pod to be ready, up to an hour, before proceeding
+function k8ready() {
+  POD=$(pod $1)
+  kubectl wait --for=condition=Ready --timeout=3600s pod/$POD
+}
+
+# pull a pod and pop a shell, form of `k8shell <pod partial match> (<container>)`
+function k8shell() {
+    POD=$(pod $1)
+    if [ "$#" -eq 2 ]; then
+      kubectl exec -it -c $2 $POD -- /bin/sh
+    else
+      kubectl exec -it $POD -- /bin/sh
+    fi
+}
+
+# get a zsh shell in the first sumac vm of a kube pod, form of `k8sumac <pod partial match>`
+function k8sumac() {
+    POD=$(pod $1)
+    kubectl exec -it $POD -- /bin/sh -c 'sumac exec -p $(sumac domain list | head -1 | tr -d -c 0-9) /bin/sh'
+}
+
+# get kube def of a file, form of `k8def <type> <resource name>`
+function k8def() {
+  kubectl get $1 $2 -o json | jq '.metadata.annotations."kubectl.kubernetes.io/last-applied-configuration" | fromjson' | remarshal --if json --of yaml
+}
+
+# confirming get and delete pod, form of `delpods <pod partial match>`
+delpods() {
+    kubectl get pods | grep $1 | awk '{print $1}'
+    echo ""
+    if read -q "confirm? Press Y/y to delete"; then
+        kubectl get pods | grep $1 | awk '{print $1}' | xargs kubectl delete pod
+        echo ""
+        echo "...deleted"
+    else
+        echo ""
+        echo "aborted"
+    fi
+}
+
+# confirming get and delete replicaset
+delrs() {
+    if read -q "confirm? Press Y/y to delete: "; then
+	kubectl delete $(kubectl get all | grep replicaset.apps | awk '{if ($2 + $3 + $4 == 0) print $1}')
+        echo ""
+        echo "...deleted" 
+    else
+        echo ""
+        echo "aborted"
+    fi
+}
+
+# Fancy Kube ns fuzzy finder
+k8f() {
+    kubectl config view -o jsonpath="{range .contexts[*]}{.name}{'\t'}$COL_UL$COL_PURP{.context.cluster}$COL_REST / {.context.namespace}{'\n'}{end}" |
+        sort -r |
+        fzf --history="$HOME/.fzf_history_kube_list" \
+            --with-nth=2,3 \
+             --query "$1" \
+             --delimiter '\t' \
+             --bind "enter:execute(kubectl config use-context {1})+abort" \
+             --bind "tab:preview(kubectl --context={1} get pods -o wide)" \
+             --preview-window "hidden:up:70%" \
+             --header "${COL_BLUE}RET${COL_REST} Select kubectl context ${COL_BLUE}TAB${COL_REST} Preview pods" \
+             --ansi | head -1
+}
