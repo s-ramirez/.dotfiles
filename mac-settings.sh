@@ -1,4 +1,4 @@
-e!/usr/bin/env zsh
+#!/usr/bin/env zsh
 
 #======================Dock settings =================
 defaults write com.apple.dock "show-recents" -bool false # Do not display recent apps in the Dock
