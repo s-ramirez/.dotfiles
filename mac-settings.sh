@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+e!/usr/bin/env zsh
 
 #======================Dock settings =================
 defaults write com.apple.dock "show-recents" -bool false # Do not display recent apps in the Dock
@@ -23,3 +23,6 @@ defaults write com.apple.finder "ShowPathbar" -bool true # Show path bar in the 
 #======================Mission Control settings =================
 defaults write com.apple.dock "mru-spaces" -bool false # Do not rearrange spaces based on most recent use
 defaults write com.apple.dock "expose-group-apps" -bool false # Do not group windows by application (default)
+
+#=========Change default location of Hammerspoon config===========
+defaults write org.hammerspoon.Hammerspoon MJConfigFile "${HOME}/.config/hammerspoon/init.lua"
