@@ -1,3 +1,2 @@
 #!/bin/sh
-yay -S ghostty stow firefox tmux
-yay -R alacritty
+yay -S ghostty stow tmux
