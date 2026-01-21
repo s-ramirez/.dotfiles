@@ -4,7 +4,7 @@
 PROJECT_DIR="${PROJECT_DIR:-$HOME/Documents/Development}"
 
 # Use find to list all directories in PROJECT_DIR and pipe to fzf
-selected=$(find "$PROJECT_DIR" -mindepth 1 -maxdepth 1 -type d -exec test -d {}/.git \; -print | fzf --prompt="Select project: " --height=40% --reverse)
+selected=$(find "$PROJECT_DIR" -mindepth 1 -maxdepth 1 -type d -exec test -d {}/.git \; -print | fzf --prompt="Select project: ")
 
 # Exit if no selection was made
 if [[ -z $selected ]]; then
