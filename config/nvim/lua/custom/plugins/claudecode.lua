@@ -1,7 +1,15 @@
 return {
   {
     'coder/claudecode.nvim',
-    dependencies = { 'folke/snacks.nvim' },
+    dependencies = {
+      {
+        'folke/snacks.nvim',
+        keys = {
+          { '<C-h>', '<cmd>TmuxNavigateLeft<cr>', mode = 't' },
+          { '<C-l>', '<cmd>TmuxNavigateRight<cr>', mode = 't' },
+        },
+      },
+    },
     config = true,
     keys = {
       { '<leader>a', desc = 'AI/Claude Code' },
