@@ -1,7 +1,9 @@
 #!/bin/sh
+set -e
 echo "Installing packages..."
-sudo pacman -S ghostty stow tmux nvim steam discord waybar otf-font-awesome hypridle hyprlock
+sudo pacman -S ghostty stow tmux nvim steam discord waybar otf-font-awesome hypridle hyprlock pavucontrol unzip file-roller
 yay -S swaync
+../setup-dotfiles.sh
 ../other-install.sh
 echo "🧑‍💻 Stowing dotfiles..."
 mkdir -p $HOME/.config/waybar
