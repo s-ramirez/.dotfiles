@@ -9,13 +9,13 @@ fi
 /opt/homebrew/bin/brew update
 
 echo "📦 Installing Packages"
-/opt/homebrew/bin/brew install fzf stow tmux jq remarshal stern helm kubectl tmux-sessionizer rg hammerspoon
+/opt/homebrew/bin/brew install fzf stow tmux jq remarshal stern helm kubectl tmux-sessionizer rg hammerspoon neovim
 
 echo "💻 Installing Applications"
 /opt/homebrew/bin/brew install --cask ghostty
-/opt/homebrew/bin/brew install neovim
 
 echo "🔠 Installing Fonts"
 /opt/homebrew/bin/brew install --cask font-fira-mono-nerd-font
+/opt/homebrew/bin/brew install --cask font-jetbrains-mono
 
 echo "✅ Installation using Homebrew is complete"
