@@ -9,7 +9,7 @@ fi
 /opt/homebrew/bin/brew update
 
 echo "📦 Installing Packages"
-/opt/homebrew/bin/brew install fzf stow tmux jq remarshal stern helm kubectl tmux-sessionizer rg hammerspoon neovim
+/opt/homebrew/bin/brew install fzf stow tmux jq remarshal stern helm kubectl tmux-sessionizer rg hammerspoon neovim node
 
 echo "💻 Installing Applications"
 /opt/homebrew/bin/brew install --cask ghostty
