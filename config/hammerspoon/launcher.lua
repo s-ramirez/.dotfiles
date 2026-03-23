@@ -6,6 +6,7 @@ local appMappings = {
 	{ key = "b", app = "Firefox" },
 	{ key = "c", app = "Slack" },
 	{ key = "t", app = "Ghostty" },
+	{ key = "o", app = "Obsidian" },
 }
 
 local hyper = { "cmd", "alt", "ctrl", "shift" }
