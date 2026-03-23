@@ -28,6 +28,28 @@ local is_right_two_thirds = function(window, screen)
 		and window.h == screen.h
 end
 
+local is_top_half = function(window, screen)
+	return window.x == screen.x and window.y == screen.y and window.w == screen.w and window.h == screen.h // 2
+end
+
+local is_top_two_thirds = function(window, screen)
+	return window.x == screen.x and window.y == screen.y and window.w == screen.w and window.h == ((screen.h // 3) * 2)
+end
+
+local is_bottom_half = function(window, screen)
+	return window.x == screen.x
+		and window.y == (screen.h // 2) + screen.y
+		and window.w == screen.w
+		and window.h == screen.h // 2
+end
+
+local is_bottom_two_thirds = function(window, screen)
+	return window.x == screen.x
+		and window.y == ((screen.h // 3) + screen.y)
+		and window.w == screen.w
+		and window.h == ((screen.h // 3) * 2)
+end
+
 -- Resize a window vs a screen.
 
 local resize_full_screen = function(window, screen)
@@ -86,6 +108,54 @@ local resize_right_two_thirds = function(window, screen)
 	return window
 end
 
+local resize_top_half = function(window, screen)
+	window.x = screen.x
+	window.y = screen.y
+	window.w = screen.w
+	window.h = screen.h // 2
+	return window
+end
+
+local resize_top_third = function(window, screen)
+	window.x = screen.x
+	window.y = screen.y
+	window.w = screen.w
+	window.h = screen.h // 3
+	return window
+end
+
+local resize_top_two_thirds = function(window, screen)
+	window.x = screen.x
+	window.y = screen.y
+	window.w = screen.w
+	window.h = (screen.h // 3) * 2
+	return window
+end
+
+local resize_bottom_half = function(window, screen)
+	window.x = screen.x
+	window.y = (screen.h // 2) + screen.y
+	window.w = screen.w
+	window.h = screen.h // 2
+	return window
+end
+
+local resize_bottom_third = function(window, screen)
+	window.x = screen.x
+	window.y = (screen.h // 3) * 2 + screen.y
+	window.w = screen.w
+	window.h = screen.h // 3
+	return window
+end
+
+local resize_bottom_two_thirds = function(window, screen)
+	window.x = screen.x
+	window.y = (screen.h // 3) + screen.y
+	window.w = screen.w
+	window.h = (screen.h // 3) * 2
+	return window
+end
+
 -- Run the correct resize function for a user request.
 
 local left_half = function(windowFrame, screenFrame)
@@ -119,9 +189,31 @@ local right_half = function(windowFrame, screenFrame)
 	end
 end
 
+local top_half = function(windowFrame, screenFrame)
+	if is_top_half(windowFrame, screenFrame) then
+		return resize_top_two_thirds(windowFrame, screenFrame)
+	elseif is_top_two_thirds(windowFrame, screenFrame) then
+		return resize_top_third(windowFrame, screenFrame)
+	else
+		return resize_top_half(windowFrame, screenFrame)
+	end
+end
+
+local bottom_half = function(windowFrame, screenFrame)
+	if is_bottom_half(windowFrame, screenFrame) then
+		return resize_bottom_two_thirds(windowFrame, screenFrame)
+	elseif is_bottom_two_thirds(windowFrame, screenFrame) then
+		return resize_bottom_third(windowFrame, screenFrame)
+	else
+		return resize_bottom_half(windowFrame, screenFrame)
+	end
+end
+
 local key_bindings = {
 	{ key = "h", func = left_half, func_name = "left_half" },
+	{ key = "k", func = top_half, func_name = "top_half" },
 	{ key = "m", func = full_screen, func_name = "full_screen" },
+	{ key = "j", func = bottom_half, func_name = "bottom_half" },
 	{ key = "l", func = right_half, func_name = "right_half" },
 }
 
