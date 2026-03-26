@@ -6,6 +6,11 @@ if [ ! -x "$STOW" ]; then
   exit 1
 fi
 
+# Fall back to xterm-256color if the current TERM isn't in the terminfo database
+if ! infocmp "$TERM" &>/dev/null; then
+  export TERM=xterm-256color
+fi
+
 echo "🧑‍💻 Stowing dotfiles..."
 $STOW -v --target=$HOME zsh
 mkdir -p $HOME/.config
